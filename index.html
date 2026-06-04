@@ -2,70 +2,150 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAWA Russia Forum</title>
+<title>RP Forum</title>
 
 <style>
-body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#0f0f0f;
-    color:white;
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #070707;
+    color: white;
 }
 
-.header{
-    background:linear-gradient(90deg,#ff0000,#8b0000);
-    padding:20px;
-    text-align:center;
-    font-size:32px;
-    font-weight:bold;
+/* TOP BAR */
+.topbar {
+    background: linear-gradient(90deg, #0f0f0f, #1a1a1a);
+    padding: 18px;
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 2px solid #ff0033;
 }
 
-.banner{
-    background:#151515;
-    padding:30px;
-    text-align:center;
-    border-bottom:2px solid #ff0000;
+/* LAYOUT */
+.wrapper {
+    display: flex;
 }
 
-.banner h1{
-    color:#ff3b3b;
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    background: #0e0e0e;
+    height: 100vh;
+    padding: 10px;
+    border-right: 1px solid #222;
 }
 
-.container{
-    width:90%;
-    max-width:1000px;
-    margin:auto;
-    margin-top:20px;
+.sidebar h3 {
+    color: #ff0033;
+    text-align: center;
 }
 
-.section{
-    background:#1a1a1a;
-    margin-bottom:15px;
-    padding:20px;
-    border-left:5px solid #ff0000;
-    border-radius:10px;
-    transition:0.3s;
-    cursor:pointer;
+.sidebar button {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    background: #151515;
+    border: 1px solid #222;
+    color: white;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: 0.2s;
 }
 
-.section:hover{
-    transform:scale(1.02);
-    background:#242424;
+.sidebar button:hover {
+    background: #ff0033;
+    box-shadow: 0 0 10px #ff0033;
 }
 
-.section h2{
-    margin:0;
-    color:#ff4444;
+/* CONTENT */
+.content {
+    flex: 1;
+    padding: 20px;
 }
 
-.topic{
-    display:none;
-    margin-top:15px;
-    color:#ddd;
+/* CARD STYLE */
+.card {
+    background: #111;
+    padding: 15px;
+    margin: 10px 0;
+    border-left: 3px solid #ff0033;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(255,0,51,0.1);
 }
 
-.footer{
-    text-align:center;
-    padding:20px;
-    color:gray;
+/* PAGE */
+.page {
+    display: none;
+}
+
+.active {
+    display: block;
+}
+
+/* HEADER TITLE INSIDE PAGE */
+.title {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #ff0033;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="topbar">
+🔥 GTA RP FORUM | 01 SERVER
+</div>
+
+<div class="wrapper">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<h3>MENU</h3>
+<button onclick="openPage('home')">🏠 Главная</button>
+<button onclick="openPage('server')">📌 01 Сервер</button>
+<button onclick="openPage('smoke')">🚬 Курилка RP</button>
+<button onclick="openPage('bio')">📖 Биографии</button>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<div id="home" class="page active">
+<div class="title">Главная</div>
+<div class="card">Добро пожаловать на RP форум</div>
+<div class="card">Новости сервера и обновления</div>
+</div>
+
+<div id="server" class="page">
+<div class="title">01 Сервер</div>
+<div class="card">✔ Открыт набор в полицию</div>
+<div class="card">✔ Обновление экономики сервера</div>
+</div>
+
+<div id="smoke" class="page">
+<div class="title">Курилка RP</div>
+<div class="card">Общение игроков без RP правил</div>
+</div>
+
+<div id="bio" class="page">
+<div class="title">Биографии</div>
+<div class="card">Создай биографию своего персонажа</div>
+</div>
+
+</div>
+</div>
+
+<script>
+function openPage(id){
+    let pages = document.getElementsByClassName("page");
+    for(let p of pages){
+        p.classList.remove("active");
+    }
+    document.getElementById(id).classList.add("active");
+}
+</script>
+
+</body>
+</html>
