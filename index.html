@@ -2,149 +2,238 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>RP Forum</title>
+<title>RP Forum FULL</title>
 
 <style>
 body {
-    margin: 0;
+    margin:0;
     font-family: Arial;
-    background: #070707;
-    color: white;
+    background:#0a0a0a;
+    color:white;
 }
 
-/* TOP BAR */
 .topbar {
-    background: linear-gradient(90deg, #0f0f0f, #1a1a1a);
-    padding: 18px;
-    font-size: 20px;
-    font-weight: bold;
-    border-bottom: 2px solid #ff0033;
+    background:#111;
+    padding:15px;
+    border-bottom:2px solid #ff0033;
+    display:flex;
+    justify-content:space-between;
 }
 
-/* LAYOUT */
-.wrapper {
-    display: flex;
-}
+.container { display:flex; }
 
-/* SIDEBAR */
 .sidebar {
-    width: 240px;
-    background: #0e0e0e;
-    height: 100vh;
-    padding: 10px;
-    border-right: 1px solid #222;
+    width:230px;
+    background:#0f0f0f;
+    height:100vh;
+    padding:10px;
 }
 
-.sidebar h3 {
-    color: #ff0033;
-    text-align: center;
+button {
+    width:100%;
+    margin:5px 0;
+    padding:10px;
+    background:#1a1a1a;
+    color:white;
+    border:none;
+    cursor:pointer;
 }
 
-.sidebar button {
-    width: 100%;
-    padding: 12px;
-    margin: 6px 0;
-    background: #151515;
-    border: 1px solid #222;
-    color: white;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: 0.2s;
-}
+button:hover { background:#ff0033; }
 
-.sidebar button:hover {
-    background: #ff0033;
-    box-shadow: 0 0 10px #ff0033;
-}
+.content { flex:1; padding:15px; }
 
-/* CONTENT */
-.content {
-    flex: 1;
-    padding: 20px;
-}
-
-/* CARD STYLE */
 .card {
-    background: #111;
-    padding: 15px;
-    margin: 10px 0;
-    border-left: 3px solid #ff0033;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(255,0,51,0.1);
+    background:#111;
+    padding:10px;
+    margin:10px 0;
+    border-left:3px solid #ff0033;
 }
 
-/* PAGE */
-.page {
-    display: none;
+input, textarea {
+    width:100%;
+    padding:10px;
+    margin:5px 0;
+    background:#1a1a1a;
+    border:none;
+    color:white;
 }
 
-.active {
-    display: block;
+.badge {
+    padding:3px 8px;
+    font-size:12px;
+    border-radius:5px;
+    margin-left:5px;
 }
 
-/* HEADER TITLE INSIDE PAGE */
-.title {
-    font-size: 22px;
-    margin-bottom: 10px;
-    color: #ff0033;
-}
+.admin { background:red; }
+.mod { background:orange; }
+.player { background:gray; }
+.black { background:black; color:red; }
+
+.page { display:none; }
+.active { display:block; }
 </style>
-
 </head>
 
 <body>
 
 <div class="topbar">
-🔥 GTA RP FORUM | 01 SERVER
+<div>🔥 RP FORUM</div>
+<div id="userBar"></div>
 </div>
 
-<div class="wrapper">
+<div class="container">
 
-<!-- SIDEBAR -->
 <div class="sidebar">
-<h3>MENU</h3>
-<button onclick="openPage('home')">🏠 Главная</button>
-<button onclick="openPage('server')">📌 01 Сервер</button>
-<button onclick="openPage('smoke')">🚬 Курилка RP</button>
-<button onclick="openPage('bio')">📖 Биографии</button>
+<button onclick="openPage('home')">🏠 Форум</button>
+<button onclick="openPage('create')">➕ Пост</button>
+<button onclick="openPage('profile')">👤 Профиль</button>
+<button onclick="openPage('admin')">⚙ Admin</button>
 </div>
 
-<!-- CONTENT -->
 <div class="content">
 
-<div id="home" class="page active">
-<div class="title">Главная</div>
-<div class="card">Добро пожаловать на RP форум</div>
-<div class="card">Новости сервера и обновления</div>
+<div id="home" class="page active"></div>
+
+<div id="create" class="page">
+<h2>Создать пост</h2>
+<input id="title" placeholder="Заголовок">
+<textarea id="text" placeholder="Текст"></textarea>
+<button onclick="createPost()">Опубликовать</button>
 </div>
 
-<div id="server" class="page">
-<div class="title">01 Сервер</div>
-<div class="card">✔ Открыт набор в полицию</div>
-<div class="card">✔ Обновление экономики сервера</div>
+<div id="profile" class="page">
+<h2>Профиль</h2>
+<input id="nick" placeholder="Ник">
+<input id="avatar" placeholder="Аватар URL">
+<button onclick="saveProfile()">Сохранить</button>
+<div id="profileInfo"></div>
 </div>
 
-<div id="smoke" class="page">
-<div class="title">Курилка RP</div>
-<div class="card">Общение игроков без RP правил</div>
-</div>
-
-<div id="bio" class="page">
-<div class="title">Биографии</div>
-<div class="card">Создай биографию своего персонажа</div>
+<div id="admin" class="page">
+<h2>Админ панель</h2>
+<div id="adminPosts"></div>
 </div>
 
 </div>
 </div>
 
-<script>
-function openPage(id){
-    let pages = document.getElementsByClassName("page");
-    for(let p of pages){
-        p.classList.remove("active");
-    }
-    document.getElementById(id).classList.add("active");
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* CONFIG */
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_ID",
+  appId: "YOUR_APP"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let userEmail = null;
+
+/* LOGIN STATE */
+onAuthStateChanged(auth, async (user)=>{
+if(user){
+userEmail = user.email;
+document.getElementById("userBar").innerText = user.email;
+loadPosts();
+loadAdmin();
+loadProfile();
 }
+});
+
+/* NAV */
+window.openPage = (id)=>{
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+/* POSTS */
+window.createPost = async ()=>{
+await addDoc(collection(db,"posts"),{
+title: title.value,
+text: text.value,
+email: userEmail,
+likes:0
+});
+loadPosts();
+}
+
+async function loadPosts(){
+let snap = await getDocs(collection(db,"posts"));
+let html="";
+
+snap.forEach(d=>{
+let p = d.data();
+
+html += `
+<div class="card">
+<b>${p.title}</b><br>
+<small>${p.email}</small>
+<p>${p.text}</p>
+
+<button onclick="likePost('${d.id}',${p.likes})">👍 ${p.likes}</button>
+<button onclick="openComments('${d.id}')">💬 Комменты</button>
+</div>
+`;
+});
+
+document.getElementById("home").innerHTML = html;
+}
+
+/* LIKES */
+window.likePost = async (id,likes)=>{
+await setDoc(doc(db,"posts",id),{likes:likes+1},{merge:true});
+loadPosts();
+}
+
+/* PROFILE */
+window.saveProfile = async ()=>{
+await setDoc(doc(db,"profiles",userEmail),{
+nickname:nick.value,
+avatar:avatar.value,
+role:"player",
+xp:0,
+blacklist:0
+});
+}
+
+/* LOAD PROFILE */
+async function loadProfile(){
+let snap = await getDocs(collection(db,"profiles"));
+}
+
+/* ADMIN DELETE */
+async function loadAdmin(){
+let snap = await getDocs(collection(db,"posts"));
+let html="";
+
+snap.forEach(d=>{
+html += `
+<div class="card">
+${d.data().title}
+<button onclick="deletePost('${d.id}')">🗑 удалить</button>
+</div>
+`;
+});
+
+document.getElementById("adminPosts").innerHTML = html;
+}
+
+window.deletePost = async (id)=>{
+await deleteDoc(doc(db,"posts",id));
+loadPosts();
+loadAdmin();
+}
+
 </script>
 
 </body>
